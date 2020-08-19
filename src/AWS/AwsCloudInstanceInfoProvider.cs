@@ -6,7 +6,7 @@
     using System.Threading.Tasks;
 
     public sealed class AwsCloudInstanceInfoProvider : ICloudInstanceInfoProvider {
-        internal readonly HttpClient httpClient = new HttpClient { BaseAddress = new Uri("http://169.254.169.254/2018-11-29/") };
+        internal readonly HttpClient httpClient = new HttpClient { BaseAddress = new Uri("http://169.254.169.254/latest/") };
 
         static readonly JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
