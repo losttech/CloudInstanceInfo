@@ -23,6 +23,7 @@
             return new CloudInstanceInfo {
                 Environment = $"{response.Compute.Provider}/{response.Compute.AzEnvironment}",
                 Size = response.Compute.VirtualMachineSize,
+                OwnerID = response.Compute.SubscriptionID.ToString(CloudInstanceInfo.GuidFormat),
             };
         }
 

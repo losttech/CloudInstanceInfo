@@ -7,7 +7,7 @@
     using Xunit;
     public class AzureProviderTests {
         [Fact]
-        public async Task CorrectlyParsesReponse() {
+        public async Task CorrectlyParsesResponse() {
             var mockHttp = new MockHttpMessageHandler();
             mockHttp.When("http://127.0.0.1/metadata/instance?api-version=2019-06-01")
                     .Respond("application/json", SampleResponse);
@@ -18,6 +18,7 @@
             Assert.Equal(0, info.AttachedDevices.Count);
             Assert.Equal("Standard_A1_v2", info.Size);
             Assert.Equal("Microsoft.Compute/AzurePublicCloud", info.Environment);
+            Assert.Equal("13f56399-bd52-4150-9748-7190aae1ff21", info.OwnerID);
         }
 
         const string SampleResponse = @"
