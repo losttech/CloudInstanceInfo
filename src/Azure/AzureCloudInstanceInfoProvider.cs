@@ -17,7 +17,6 @@
             }
             using var cancellationRegistration = cancellation.Register(CancelPending);
             using var responseStream = await this.httpClient.GetStreamAsync("metadata/instance?api-version=2019-06-01").ConfigureAwait(false);
-            cancellationRegistration.Dispose();
 
             var response = await JsonSerializer.DeserializeAsync<AzureInstance>(responseStream, jsonSerializerOptions, cancellationToken: cancellation).ConfigureAwait(false);
             return new CloudInstanceInfo {
