@@ -16,8 +16,14 @@
                 this.httpClient.CancelPendingRequests();
             }
             using var cancellationRegistration = cancellation.Register(CancelPending);
-            using var responseStream = await this.httpClient.GetStreamAsync("metadata/instance?api-version=2019-06-01").ConfigureAwait(false);
 
+            var infoRequest = new HttpRequestMessage(HttpMethod.Get, "metadata/instance?api-version=2019-06-01");
+            infoRequest.Headers.Add("Metadata", "true");
+            using var infoResponse = await this.httpClient.SendAsync(infoRequest,
+                HttpCompletionOption.ResponseContentRead, cancellation).ConfigureAwait(false);
+            infoResponse.EnsureSuccessStatusCode();
+
+            using var responseStream = await infoResponse.Content.ReadAsStreamAsync().ConfigureAwait(false);
             var response = await JsonSerializer.DeserializeAsync<AzureInstance>(responseStream, jsonSerializerOptions, cancellationToken: cancellation).ConfigureAwait(false);
             return new CloudInstanceInfo {
                 Environment = $"{response.Compute.Provider}/{response.Compute.AzEnvironment}",

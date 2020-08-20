@@ -10,6 +10,7 @@
         public async Task CorrectlyParsesResponse() {
             var mockHttp = new MockHttpMessageHandler();
             mockHttp.When("http://127.0.0.1/metadata/instance?api-version=2019-06-01")
+                    .WithHeaders("Metadata", "true")
                     .Respond("application/json", SampleResponse);
             var httpClient = mockHttp.ToHttpClient();
             httpClient.BaseAddress = new Uri("http://127.0.0.1");
