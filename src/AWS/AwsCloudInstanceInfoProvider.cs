@@ -21,7 +21,7 @@
 
             var tokenRequest = new HttpRequestMessage(HttpMethod.Put, "api/token");
             tokenRequest.Headers.Add("X-aws-ec2-metadata-token-ttl-seconds", "180");
-            var tokenResponse = await this.httpClient.SendAsync(tokenRequest,
+            using var tokenResponse = await this.httpClient.SendAsync(tokenRequest,
                 HttpCompletionOption.ResponseContentRead, cancellation).ConfigureAwait(false);
             tokenResponse.EnsureSuccessStatusCode();
 
@@ -29,7 +29,7 @@
 
             var infoRequest = new HttpRequestMessage(HttpMethod.Get, "dynamic/instance-identity/document");
             infoRequest.Headers.Add("X-aws-ec2-metadata-token", token);
-            var infoResponse = await this.httpClient.SendAsync(infoRequest,
+            using var infoResponse = await this.httpClient.SendAsync(infoRequest,
                 HttpCompletionOption.ResponseContentRead, cancellation).ConfigureAwait(false);
             infoResponse.EnsureSuccessStatusCode();
 
