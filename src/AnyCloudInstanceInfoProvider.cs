@@ -4,12 +4,11 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using LostTech.Cloud.AWS;
-    using LostTech.Cloud.Azure;
-    public sealed class AnyCloudInstanceInfoProvider: ICloudInstanceInfoProvider {
+    public sealed class AnyCloudInstanceInfoProvider : ICloudInstanceInfoProvider {
         static readonly ICloudInstanceInfoProvider[] providers = {
-            new AzureCloudInstanceInfoProvider(),
-            new AwsCloudInstanceInfoProvider(),
+            new Azure.AzureCloudInstanceInfoProvider(),
+            new AWS.AwsCloudInstanceInfoProvider(),
+            new GCP.GoogleComputeInstanceInfoProvider(),
         };
 
         public async Task<CloudInstanceInfo> GetInstanceInfoAsync(CancellationToken cancellation = default) {
@@ -17,7 +16,7 @@
             using var linkedCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellation, stillPendingCancellation.Token);
             var queries = providers.Select(provider => provider.GetInstanceInfoAsync(linkedCancellation.Token)).ToList();
             var failures = new List<Exception>();
-            while(queries.Count > 0) {
+            while (queries.Count > 0) {
                 var finished = await Task.WhenAny(queries).ConfigureAwait(false);
                 queries.Remove(finished);
                 if (finished.Status == TaskStatus.RanToCompletion) {
